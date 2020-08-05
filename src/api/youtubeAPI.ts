@@ -15,7 +15,19 @@ export interface SearchListResponse {
     totalResults: number;
     resultsPerPage: number;
   };
-  items: SearchResult[];
+  items: ListSearchResult[];
+}
+
+export interface VideoListResponse {
+  kind: "youtube#videoListResponse",
+  etag: string
+  nextPageToken: string
+  prevPageToken: string
+  pageInfo: {
+    totalResults: number
+    resultsPerPage: number
+  }
+  items: VideoSearchResult[]
 }
 
 export interface SearchResult {
@@ -27,29 +39,41 @@ export interface SearchResult {
     channelId?: string
     playlistId?: string
   }
-  snippet?: {
-    publishedAt: Date
-    channelId: string
+}
+
+export interface ListSearchResult extends SearchResult { 
+  snippet: ListSnippet
+}
+
+export interface VideoSearchResult extends SearchResult {
+  snipped: VideoSnippet
+}
+
+interface ListSnippet {
+  publishedAt: Date
+  channelId: string
+  title: string
+  description: string
+  thumbnails: {
+    default: string
+    medium?: string
+    high?: string
+    standard?: string
+    maxres?: string
+  }
+  channelTitle: string
+  liveBroadcastContent: string
+}
+
+interface VideoSnippet extends ListSnippet {
+  tags: string[]
+  categoryId: string
+  defaultLanguage: string
+  localized: {
     title: string
     description: string
-    thumbnails: {
-      [key: string]: {
-        url: string
-        width: number
-        height: number
-      }
-    }
-    channelTitle: string
-    tags: string[]
-    categoryId: string
-    liveBroadcastContent: string
-    defaultLanguage: string
-    localized: {
-      title: string
-      description: string
-    }
-    defaultAudioLanguage: string
-  };
+  }
+  defaultAudioLanguage: string
 }
 
 export interface MusicVideoSearchOptions {
