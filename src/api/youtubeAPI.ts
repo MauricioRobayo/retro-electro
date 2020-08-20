@@ -49,17 +49,23 @@ export interface VideoSearchResult extends SearchResult {
   snipped: VideoSnippet
 }
 
+interface Thumbnail {
+  url: string
+  width: number
+  height: number
+}
+
 interface ListSnippet {
   publishedAt: Date
   channelId: string
   title: string
   description: string
   thumbnails: {
-    default: string
-    medium?: string
-    high?: string
-    standard?: string
-    maxres?: string
+    default: Thumbnail
+    medium?: Thumbnail
+    high?: Thumbnail
+    standard?: Thumbnail
+    maxres?: Thumbnail
   }
   channelTitle: string
   liveBroadcastContent: string
