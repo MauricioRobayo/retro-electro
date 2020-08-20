@@ -22,8 +22,7 @@ const Playlist: FC = () => {
       </div>
     );
   }
-
-  console.log(videos);
+console.log(videos)
   return (
     <>
       {videos.map((video) => (

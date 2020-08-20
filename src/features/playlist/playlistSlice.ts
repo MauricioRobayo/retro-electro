@@ -2,19 +2,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getMusicVideos, ListSearchResult, MusicVideoSearchOptions } from 'api/youtubeAPI'
 import { AppThunk } from 'app/store'
 
-type Status =
+export type PlaylistStatus =
   | 'idle'
   | 'loading'
   | 'succeeded'
   | 'failed'
 
-interface InitialState {
-  status: Status
+export interface InitialState {
+  status: PlaylistStatus
   error: string | null
   videos: ListSearchResult[]
 }
 
-const initialState: InitialState = {
+export const initialState: InitialState = {
   status: "idle",
   error: null,
   videos: [],
@@ -25,15 +25,13 @@ const playlistSlice = createSlice({
   initialState,
   reducers: {
     fetchPlaylistSuccess(state, action: PayloadAction<ListSearchResult[]>) {
-      console.log(action.payload)
       state.status = 'succeeded'
       state.videos = action.payload
       state.error = null
     },
     fetchPlaylistFailed(state, action: PayloadAction<string>) {
       state.status = 'failed'
-      state.error = action.payload
-      
+      state.error = action.payload 
     },
     fetchPlaylistLoading(state) {
       state.status = 'loading'

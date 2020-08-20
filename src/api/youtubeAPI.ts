@@ -1,8 +1,8 @@
-const URL = 'https://www.googleapis.com/youtube/v3/'
-const API_KEY = 'AIzaSyCGMKnx0zLMEUpEt2N6G3qfF3ZbW1O3osE'
+const URL = "https://www.googleapis.com/youtube/v3/";
+const API_KEY = "AIzaSyCGMKnx0zLMEUpEt2N6G3qfF3ZbW1O3osE";
 
 enum VideoCategory {
-  MUSIC = '10'
+  MUSIC = "10",
 }
 
 export interface SearchListResponse {
@@ -19,114 +19,119 @@ export interface SearchListResponse {
 }
 
 export interface VideoListResponse {
-  kind: "youtube#videoListResponse",
-  etag: string
-  nextPageToken: string
-  prevPageToken: string
+  kind: "youtube#videoListResponse";
+  etag: string;
+  nextPageToken: string;
+  prevPageToken: string;
   pageInfo: {
-    totalResults: number
-    resultsPerPage: number
-  }
-  items: VideoSearchResult[]
+    totalResults: number;
+    resultsPerPage: number;
+  };
+  items: VideoSearchResult[];
 }
 
 export interface SearchResult {
   kind: "youtube#searchResult";
   etag: string;
   id: {
-    kind: string
-    videoId: string
-    channelId?: string
-    playlistId?: string
-  }
+    kind: "youtube#video";
+    videoId: string;
+    channelId?: string;
+    playlistId?: string;
+  };
 }
 
-export interface ListSearchResult extends SearchResult { 
-  snippet: ListSnippet
+export interface ListSearchResult extends SearchResult {
+  snippet: ListSnippet;
 }
 
 export interface VideoSearchResult extends SearchResult {
-  snipped: VideoSnippet
+  snipped: VideoSnippet;
 }
 
 interface Thumbnail {
-  url: string
-  width: number
-  height: number
+  url: string;
+  width: number;
+  height: number;
 }
 
 interface ListSnippet {
-  publishedAt: Date
-  channelId: string
-  title: string
-  description: string
+  publishedAt: string;
+  channelId: string;
+  title: string;
+  description: string;
   thumbnails: {
-    default: Thumbnail
-    medium?: Thumbnail
-    high?: Thumbnail
-    standard?: Thumbnail
-    maxres?: Thumbnail
-  }
-  channelTitle: string
-  liveBroadcastContent: string
+    default: Thumbnail;
+    medium?: Thumbnail;
+    high?: Thumbnail;
+    standard?: Thumbnail;
+    maxres?: Thumbnail;
+  };
+  channelTitle: string;
+  liveBroadcastContent: string;
 }
 
 interface VideoSnippet extends ListSnippet {
-  tags: string[]
-  categoryId: string
-  defaultLanguage: string
+  tags: string[];
+  categoryId: string;
+  defaultLanguage: string;
   localized: {
-    title: string
-    description: string
-  }
-  defaultAudioLanguage: string
+    title: string;
+    description: string;
+  };
+  defaultAudioLanguage: string;
 }
 
 export interface MusicVideoSearchOptions {
-  q: string
-  maxResults?: string
-  order?: 'date' | 'rating' | 'relevance' | 'title' | 'videoCount' | 'viewCount'
-  videoDuration?: 'any' | 'long' | 'medium' | 'short'
+  q: string;
+  maxResults?: string;
+  order?:
+    | "date"
+    | "rating"
+    | "relevance"
+    | "title"
+    | "videoCount"
+    | "viewCount";
+  videoDuration?: "any" | "long" | "medium" | "short";
 }
 
 export const getMusicVideos = async ({
   q,
-  maxResults = '5',
-  order = 'relevance',
-  videoDuration = 'any',
-}: MusicVideoSearchOptions): Promise<SearchListResponse> => {  
+  maxResults = "5",
+  order = "relevance",
+  videoDuration = "any",
+}: MusicVideoSearchOptions): Promise<SearchListResponse> => {
   const searchParams = new URLSearchParams({
     q,
     maxResults,
     order,
     videoDuration,
-    type: 'video',
-    part: 'snippet',
+    type: "video",
+    part: "snippet",
     key: API_KEY,
     videoCategoryId: VideoCategory.MUSIC,
-  })
-  const response = await fetch(`${URL}search?${searchParams}`)
-  const json = await response.json()
-  
+  });
+  const response = await fetch(`${URL}search?${searchParams}`);
+  const json = await response.json();
+
   if (!response.ok) {
-    throw new Error(json.error.message)
+    throw new Error(json.error.message);
   }
 
-  return json
-}
+  return json;
+};
 
 export const getVideoInfo = async (id: string): Promise<SearchResult> => {
   const searchParams = new URLSearchParams({
     id,
-    part: 'snippet',
+    part: "snippet",
     key: API_KEY,
-  })
-  const response = await fetch(`${URL}search?${searchParams}`)
+  });
+  const response = await fetch(`${URL}search?${searchParams}`);
 
-  
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(response.statusText);
   }
 
-  return response.json()
-}
+  return response.json();
+};
