@@ -1,5 +1,5 @@
 const URL = 'https://www.googleapis.com/youtube/v3/'
-const API_KEY = 'AIzaSyAI_CxS93BYglKgJPBrVQK1t3m3VIeKSBc'
+const API_KEY = 'AIzaSyCGMKnx0zLMEUpEt2N6G3qfF3ZbW1O3osE'
 
 enum VideoCategory {
   MUSIC = '10'
@@ -100,12 +100,13 @@ export const getMusicVideos = async ({
     videoCategoryId: VideoCategory.MUSIC,
   })
   const response = await fetch(`${URL}search?${searchParams}`)
-
+  const json = await response.json()
+  
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(json.error.message)
   }
 
-  return response.json()
+  return json
 }
 
 export const getVideoInfo = async (id: string): Promise<SearchResult> => {
@@ -116,6 +117,7 @@ export const getVideoInfo = async (id: string): Promise<SearchResult> => {
   })
   const response = await fetch(`${URL}search?${searchParams}`)
 
+  
   if (!response.ok) {
     throw new Error(response.statusText)
   }
