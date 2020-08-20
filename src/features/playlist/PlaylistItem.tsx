@@ -1,20 +1,27 @@
-import React, { FC } from 'react'
-import { htmlUnescape } from 'escape-goat'
+import React, { FC } from "react";
+import { htmlUnescape } from "escape-goat";
+import PropTypes, { InferProps } from "prop-types";
 
-interface Props {
-  title: string
-  thumbnail: string
-  channelTitle: string
+
+const playlistItemProps = {
+  title: PropTypes.string.isRequired,
+  channelTitle: PropTypes.string.isRequired,
 }
 
-const PlaylistItem: FC<Props> = ({ title, thumbnail, channelTitle}) => (
+type PlaylistProps = InferProps<typeof playlistItemProps>
+
+const PlaylistItem: FC<PlaylistProps> = ({
+  title,
+  channelTitle,
+}) => (
   <article>
     <header>
-      <img src={thumbnail} alt={title} />
       <h2>{htmlUnescape(title)}</h2>
     </header>
     <p>{channelTitle}</p>
   </article>
-)
+);
 
-export default PlaylistItem
+PlaylistItem.propTypes = playlistItemProps
+
+export default PlaylistItem;

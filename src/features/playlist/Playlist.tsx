@@ -22,13 +22,13 @@ const Playlist: FC = () => {
       </div>
     );
   }
-console.log(videos)
+
   return (
     <>
       {videos.map((video) => (
         <PlaylistItem
+          key={video.id.videoId}
           title={video.snippet.title}
-          thumbnail={video.snippet.thumbnails.default.url}
           channelTitle={video.snippet.channelTitle}
         />
       ))}
