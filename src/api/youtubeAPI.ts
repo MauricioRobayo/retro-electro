@@ -1,0 +1,137 @@
+const URL = "https://www.googleapis.com/youtube/v3/";
+const API_KEY = "AIzaSyCGMKnx0zLMEUpEt2N6G3qfF3ZbW1O3osE";
+
+enum VideoCategory {
+  MUSIC = "10",
+}
+
+export interface SearchListResponse {
+  kind: "youtube#searchListResponse";
+  etag: string;
+  nextPageToken?: string;
+  prevPageToken?: string;
+  regionCode: string;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
+  };
+  items: ListSearchResult[];
+}
+
+export interface VideoListResponse {
+  kind: "youtube#videoListResponse";
+  etag: string;
+  nextPageToken: string;
+  prevPageToken: string;
+  pageInfo: {
+    totalResults: number;
+    resultsPerPage: number;
+  };
+  items: VideoSearchResult[];
+}
+
+export interface SearchResult {
+  kind: "youtube#searchResult";
+  etag: string;
+  id: {
+    kind: "youtube#video";
+    videoId: string;
+    channelId?: string;
+    playlistId?: string;
+  };
+}
+
+export interface ListSearchResult extends SearchResult {
+  snippet: ListSnippet;
+}
+
+export interface VideoSearchResult extends SearchResult {
+  snipped: VideoSnippet;
+}
+
+interface Thumbnail {
+  url: string;
+  width: number;
+  height: number;
+}
+
+interface ListSnippet {
+  publishedAt: string;
+  channelId: string;
+  title: string;
+  description: string;
+  thumbnails: {
+    default: Thumbnail;
+    medium?: Thumbnail;
+    high?: Thumbnail;
+    standard?: Thumbnail;
+    maxres?: Thumbnail;
+  };
+  channelTitle: string;
+  liveBroadcastContent: string;
+}
+
+interface VideoSnippet extends ListSnippet {
+  tags: string[];
+  categoryId: string;
+  defaultLanguage: string;
+  localized: {
+    title: string;
+    description: string;
+  };
+  defaultAudioLanguage: string;
+}
+
+export interface MusicVideoSearchOptions {
+  q: string;
+  maxResults?: string;
+  order?:
+    | "date"
+    | "rating"
+    | "relevance"
+    | "title"
+    | "videoCount"
+    | "viewCount";
+  videoDuration?: "any" | "long" | "medium" | "short";
+}
+
+export const getMusicVideos = async ({
+  q,
+  maxResults = "5",
+  order = "relevance",
+  videoDuration = "any",
+}: MusicVideoSearchOptions): Promise<SearchListResponse> => {
+  const searchParams = new URLSearchParams({
+    q,
+    maxResults,
+    order,
+    videoDuration,
+    type: "video",
+    part: "snippet",
+    key: API_KEY,
+    videoCategoryId: VideoCategory.MUSIC,
+  });
+  const response = await fetch(`${URL}search?${searchParams}`);
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.error.message);
+  }
+
+  return json;
+};
+
+export const getVideoInfo = async (id: string): Promise<SearchResult> => {
+  const searchParams = new URLSearchParams({
+    id,
+    part: "snippet",
+    key: API_KEY,
+  });
+  const response = await fetch(`${URL}search?${searchParams}`);
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  return response.json();
+};
